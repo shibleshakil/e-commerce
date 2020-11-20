@@ -30,9 +30,10 @@
             <table class="table table-bordered data-table">
               <thead>
                 <tr>
-                  <th>Category Id</th>
+                  <th>Category ID</th>
                   <th>Category Name</th>
-                  <th>Category Url</th>
+                  <th>Category Level</th>
+                  <th>Category URL</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -41,8 +42,9 @@
                 <tr class="gradeX">
                   <td>{{$category->id}}</td>
                   <td>{{$category->name}}</td>
+                  <td>{{$category->parent_id}}</td>
                   <td>{{$category->url}}</td>
-                  <td class="center"><a href="#" class="btn btn-primary btn-mini">Edit</a> <a href="#" class="btn btn-danger btn-mini">Delete</a></td>
+                  <td class="center"><a href="{{url('/admin/edit-category/'.$category->id) }}" class="btn btn-primary btn-mini">Edit</a> <a id="delete_category" href="{{url('/admin/delete-category/'.$category->id) }}" class="btn btn-danger btn-mini">Delete</a></td>
                 </tr>
                 @endforeach
               </tbody>
