@@ -14,8 +14,11 @@
 // Route::get('/', function () {
 //     return view('welcome');
 // });
+//front route
 Route::get('/','IndexController@index');
+Route::get('/products/{url}', 'ProductController@products');
 
+//admin route
 Route::match(['get','post'], '/admin', 'AdminController@login');
 
 Auth::routes();

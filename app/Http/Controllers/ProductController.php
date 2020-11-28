@@ -185,4 +185,25 @@ class ProductController extends Controller
         return redirect()->back()->with('success','Attribute deleted Successfully!');
     }
 
+    //front 
+
+    public function products($url=null){
+        $categories = Category::with('categories')->where(['parent_id' =>'0'])->get();
+        $categoryDetails = Category::where(['url'=>$url])->first();
+       // dd($categoryDetails->id);
+        if($categoryDetails->parent_id==0){
+            //if url is main category url
+            $sub_categories = Category::where(['parent_id'=>$categoryDetails->id])->get('id')->toarray();
+            //dd($sub_categories);
+            $productsAll = Product::whereIn('category_id',$sub_categories)->get();
+            //dd($productsAll);
+        }else{
+            //if url is sub category url
+            $productsAll = Product::where(['category_id'=>$categoryDetails->id])->get();
+        }
+
+        
+        return view('products.listing')->with(compact('categories','categoryDetails','productsAll'));
+    }
+
 }

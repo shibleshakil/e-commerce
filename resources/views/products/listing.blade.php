@@ -100,7 +100,7 @@
                                     <div class="panel-body">
                                     <ul>
                                             @foreach($cat->categories as $subcat)
-                                            <li><a href="{{ asset('/products/'.$subcat->url ) }}">{{ $subcat->name }} </a></li>
+                                            <li><a href="{{ $subcat->url }}">{{ $subcat->name }} </a></li>
                                             @endforeach
                                         </ul>
                                     </div>
@@ -150,7 +150,7 @@
                 <div class="col-sm-9 padding-right">
                     <div class="features_items">
                         <!--features_items-->
-						<h2 class="title text-center">Features Items</h2>
+						<h2 class="title text-center">{{ $categoryDetails->name }}</h2>
 						@foreach($productsAll as $product)
                         <div class="col-sm-4">
                             <div class="product-image-wrapper">
