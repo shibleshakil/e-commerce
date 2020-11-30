@@ -16,7 +16,12 @@
 // });
 //front route
 Route::get('/','IndexController@index');
+//listing page
 Route::get('/products/{url}', 'ProductController@products');
+//for product detail of particular id
+Route::get('/product/{id}','ProductController@product');
+//product attribute price
+Route::get('/get-product-price','ProductController@getProductPrice'); 
 
 //admin route
 Route::match(['get','post'], '/admin', 'AdminController@login');

@@ -1,16 +1,16 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\Input;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
 use Auth;
 use Session;
 use Image;
 use App\Category;
 use App\Product;
 use App\ProductAttributes;
-
-use Illuminate\Http\Request;
+use File;
 
 class ProductController extends Controller
 {
@@ -147,7 +147,37 @@ class ProductController extends Controller
         return view('admin.products.view_products')->with(compact('products'));
     }
 
-    public function deleteProductImage($id=null){
+    public function deleteProductImage($id = null){
+        //getting image name
+        $productImage = Product::where(['id'=>$id])->first();
+        
+        //geting image path
+        $original_image_path = '/img/backend_images/products/original';
+        $large_image_path = '/img/backend_images/products/large/';
+        $medium_image_path = '/img/backend_images/products/medium/';
+        $small_image_path = '/img/backend_images/products/small/';
+       
+        //delete original image if not exit in folder
+         if(file_exists($original_image_path.$productImage->image)){
+            unlink($original_image_path.$productImage->image);
+         }
+
+        //delete large image if not exit in folder
+        if(file_exists($large_image_path.$productImage->image)){
+            unlink($large_image_path.$productImage->image);
+        }
+
+        //delete medium image if not exit in folder
+        if(file_exists($medium_image_path.$productImage->image)){
+            unlink($medium_image_path.$productImage->image);
+        }
+
+        //delete small image if not exit in folder
+        if(file_exists($small_image_path.$productImage->image)){
+            unlink($small_image_path.$productImage->image);
+        }
+
+        //delete from database table
         Product::where(['id'=>$id])->update(['image'=>'']);
         return redirect()->back()->with('success','Image Deleted Successfully');
     }
@@ -188,7 +218,14 @@ class ProductController extends Controller
     //front 
 
     public function products($url=null){
+        //show 404 page not found
+        $countCategory = Category::where(['url'=>$url, 'status'=>"1"])->count();
+        if($countCategory == 0){
+            abort(404);
+        }
+        //get all categories and sub categories
         $categories = Category::with('categories')->where(['parent_id' =>'0'])->get();
+
         $categoryDetails = Category::where(['url'=>$url])->first();
        // dd($categoryDetails->id);
         if($categoryDetails->parent_id==0){
@@ -204,6 +241,26 @@ class ProductController extends Controller
 
         
         return view('products.listing')->with(compact('categories','categoryDetails','productsAll'));
+    }
+
+    //product details of particular id
+    public function product($id = null){
+        $productDetail = Product::with('attributes')->where('id',$id)->first();
+        $productDetail = json_decode(json_encode($productDetail));
+        //dd($productDetail);
+
+        //get all categories and sub categories
+        $categories = Category::with('categories')->where(['parent_id' =>'0'])->get();
+
+        return view('products.detail')->with(compact('productDetail', 'categories'));
+    }
+
+    //product attributes with price
+    public function getProductPrice(Request $request){
+        $data = $request->all();
+        $proArr = explode("-", $data['idSize']);
+        $proAttr = ProductAttributes::where(['id'=> $proArr[0], 'size' => $proArr[1]])->first();
+        echo $proAttr->price;
     }
 
 }

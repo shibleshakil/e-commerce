@@ -11,12 +11,18 @@ class CategoryController extends Controller
     public function addCategory(Request $request){
         if($request->isMethod('post')){
             $data=$request->all();
-            //echo"<pre>";print_r($data); die;
+            //dd($data);
+            if(empty($data['status'])){
+                $status = 0;
+            }else{
+                $status = 1;
+            }
             $category = new category;
             $category->name = $data['category_name'];
             $category->parent_id = $data['parent_id'];
             $category->discription = $data['discription'];
             $category->url = $data['url'];
+            $category->status = $status;
             $category->save();
 
             return redirect('/admin/view-categories')->with('success', 'Category Added Successfully');
@@ -29,7 +35,12 @@ class CategoryController extends Controller
         if($request->isMethod('post')){
             $data=$request->all();
             //echo "<pre>";print_r($data);die;
-            Category::where(['id'=>$id])->update(['name' => $data['category_name'],'discription' => $data['discription'],'url' => $data['url']]);
+            if(empty($data['status'])){
+                $status = 0;
+            }else{
+                $status = 1;
+            }
+            Category::where(['id'=>$id])->update(['name' => $data['category_name'],'discription' => $data['discription'],'url' => $data['url'],'status'=>$status]);
             return redirect('/admin/view-categories')->with('success', 'Category Updated Successfully');
         }
         $categoryDetails = Category::where(['id'=>$id])->first();
