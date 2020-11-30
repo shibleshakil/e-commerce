@@ -32,6 +32,11 @@ class ProductController extends Controller
             }else{
                 $product->discription='';
             }
+            if(!empty($data['material'])){
+                $product->material=$data['material'];
+            }else{
+                $product->material='';
+            }
             $product->price=$data['price'];
             //upload image
             if($request->hasfile('image')){
@@ -102,14 +107,18 @@ class ProductController extends Controller
             if(empty($data['discription'])){
                 $data['discription'] = '';
             }
+            if(empty($data['material'])){
+                $data['material'] = '';
+            }
             Product::where(['id'=>$id])->update(['category_id'=>$data['category_id'],'product_name'=>$data['product_name'],
             'product_code'=>$data['product_code'],'product_color'=>$data['product_color'],'discription'=>$data['discription'],
-            'price'=>$data['price'],'image'=>$filename]);
-            
+            'material'=>$data['material'],'price'=>$data['price'],'image'=>$filename]);
+        
             return redirect()->back()->with('success','product update successfully');
         }
         //geting product details
         $productDetails = Product::where(['id'=>$id])->first();
+        //dd($productDetails);
         //categories drop down start
         $categories = Category::where(['parent_id'=>0])->get();
         $categories_dropdown = "<option value='' selected disabled>Select</option>";
@@ -130,8 +139,9 @@ class ProductController extends Controller
                 $categories_dropdown .= "<option value = '".$sub_cat->id."' ".$selected.">
                 &nbsp;--&nbsp;".$sub_cat->name."</option>";
             }
+            //categories drop down end
         }
-        //categories drop down end
+        
         return view('admin.products.edit_product')->with(compact('productDetails','categories_dropdown'));
     }
 

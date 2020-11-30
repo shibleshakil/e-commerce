@@ -60,6 +60,12 @@
                 </div>
               </div>
               <div class="control-group">
+                <label class="control-label">Material</label>
+                <div class="controls">
+                  <textarea name="material" id="material"> </textarea>
+                </div>
+              </div>
+              <div class="control-group">
                 <label class="control-label">Price</label>
                 <div class="controls">
                   <input type="text" name="price" id="price">

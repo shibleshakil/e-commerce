@@ -43,7 +43,7 @@ $(document).ready(function(){
 			success:function(resp){
 				$("#getPrice").html("BDT "+resp);
 			},error:function(){
-				alert("Error");
+				window.location.href = "http://stackoverflow.com";
 			}
 		});
 	});
