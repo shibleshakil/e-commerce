@@ -10,6 +10,7 @@ use Image;
 use App\Category;
 use App\Product;
 use App\ProductAttributes;
+use App\ProductImage;
 use File;
 
 class ProductController extends Controller
@@ -17,7 +18,6 @@ class ProductController extends Controller
     public function addProduct(Request $request){
         if($request->isMethod('post')){
             $data = $request->all();
-            //dd($data);
             if(empty($data['category_id'])){
                 return redirect()->back()->with('error','Category Id Missing');
             }
@@ -54,14 +54,10 @@ class ProductController extends Controller
                     Image::make($image_tmp)->resize(1200,1200)->save($large_image_path);
                     Image::make($image_tmp)->resize(600,600)->save($medium_image_path);
                     Image::make($image_tmp)->resize(300,300)->save($small_image_path);
-
                     //image store in database
                     $product->image = $filename;
                 }
             }
-
-            $product->save();
-           // return redirect()->back()->with('success','Product Has Been Added Succesfully');
             $product->save();
             return redirect('/admin/view-products')->with('success','Product Has Been Added Succesfully');
         }
@@ -82,7 +78,6 @@ class ProductController extends Controller
     public function editProduct(Request $request, $id=null){
         if($request->isMethod('post')){
             $data = $request->all();
-            //dd($data);
             //upload image
             if($request->hasfile('image')){
                 $image_tmp = Input::file('image');
@@ -118,7 +113,6 @@ class ProductController extends Controller
         }
         //geting product details
         $productDetails = Product::where(['id'=>$id])->first();
-        //dd($productDetails);
         //categories drop down start
         $categories = Category::where(['parent_id'=>0])->get();
         $categories_dropdown = "<option value='' selected disabled>Select</option>";
@@ -146,7 +140,7 @@ class ProductController extends Controller
     }
 
     public function viewProducts(){
-        $products = Product::get();
+        $products = Product::orderBy('id','DESC')->get();
         $products = json_decode(json_encode($products));
         foreach($products as $key =>$val){
             $category_name = Category::where(['id' => $val->category_id])->first();
@@ -206,6 +200,21 @@ class ProductController extends Controller
             //dd($data);
             foreach($data['sku'] as $key => $val){
                 if(!empty($val)){
+
+                    //data check for sku
+                    $attrCountSku = ProductAttributes::where(['sku'=>$val])->count();
+                    if($attrCountSku>0){
+                        return redirect('/admin/add-attributes/'.$id)->with('error', '"'.$val.'" SKU is already exists. 
+                            Please add a new one.');
+                    }
+
+                    //data check for size
+                    $attrCountSize = ProductAttributes::where(['product_id'=>$id, 'size'=>$data['size'][$key]])->count();
+                    if($attrCountSize>0){
+                        return redirect('/admin/add-attributes/'.$id)->with('error', '"'.$data['size'][$key].'" Size is already exists
+                        for this product. Please add a new one.');
+                    }
+
                     $attributes = new ProductAttributes;
                     $attributes->product_id = $id;
                     $attributes->sku = $val;
@@ -219,10 +228,81 @@ class ProductController extends Controller
         }
         return view('admin.products.add_attributes')->with(compact('productDetails'));
     }
+    public function addImages(Request $request, $id=null){
+        $productDetails = Product::with('attributes')->where(['id' => $id])->first();
+        if($request->isMethod('post')){
+            $data = $request->all();
+            //dd($data);
+            if($request->hasFile('image')){
+                $files = $request->file('image');
+                foreach($files as $file){
+                    //upload alternative images
+                    $images = new ProductImage;
+                    $extension = $file->getClientOriginalExtension();
+                    $fileName = rand(111,99999).'.'.$extension;
+                    $original_image_path = 'img/backend_images/products/original/'.$fileName;
+                    $large_image_path = 'img/backend_images/products/large/'.$fileName;
+                    $medium_image_path = 'img/backend_images/products/medium/'.$fileName;
+                    $small_image_path = 'img/backend_images/products/small/'.$fileName;
+
+                    //image resize
+                    Image::make($file)->save($original_image_path);
+                    Image::make($file)->resize(1200,1200)->save($large_image_path);
+                    Image::make($file)->resize(600,600)->save($medium_image_path);
+                    Image::make($file)->resize(300,300)->save($small_image_path);
+
+                    //image store in database
+                    $images->image = $fileName;
+                    $images->product_id = $data['product_id'];
+                    //dd($images);
+                    $images->save();
+                }
+            }
+            return redirect('/admin/add-images/'.$id)->with('success','Alternative images added succesfilly');
+        }
+
+        //showing images
+        $productImages = ProductImage::where(['product_id'=>$id])->get();
+        return view('admin.products.add_images')->with(compact('productDetails', 'productImages'));
+    }
 
     public function deleteattribute(Request $request, $id=null){
         ProductAttributes::where(['id'=>$id])->delete();
         return redirect()->back()->with('success','Attribute deleted Successfully!');
+    }
+    public function deleteAltImage($id = null){
+        //getting image name
+        $productImage = ProductImage::where(['id'=>$id])->first();
+        
+        //geting image path
+        $original_image_path = '/img/backend_images/products/original';
+        $large_image_path = '/img/backend_images/products/large/';
+        $medium_image_path = '/img/backend_images/products/medium/';
+        $small_image_path = '/img/backend_images/products/small/';
+       
+        //delete original image if not exit in folder
+         if(file_exists($original_image_path.$productImage->image)){
+            unlink($original_image_path.$productImage->image);
+         }
+
+        //delete large image if not exit in folder
+        if(file_exists($large_image_path.$productImage->image)){
+            unlink($large_image_path.$productImage->image);
+        }
+
+        //delete medium image if not exit in folder
+        if(file_exists($medium_image_path.$productImage->image)){
+            unlink($medium_image_path.$productImage->image);
+        }
+
+        //delete small image if not exit in folder
+        if(file_exists($small_image_path.$productImage->image)){
+            unlink($small_image_path.$productImage->image);
+        }
+
+        //delete from database table
+        ProductImage::where(['id'=>$id])->delete();
+        return redirect()->back()->with('success','Alternative Image Deleted Successfully');
     }
 
     //front 
@@ -262,7 +342,11 @@ class ProductController extends Controller
         //get all categories and sub categories
         $categories = Category::with('categories')->where(['parent_id' =>'0'])->get();
 
-        return view('products.detail')->with(compact('productDetail', 'categories'));
+        //get alternative images
+        $productAltImage = ProductImage::where('product_id',$id)->get();
+        //dd($productAltImage);
+
+        return view('products.detail')->with(compact('productDetail', 'categories', 'productAltImage'));
     }
 
     //product attributes with price

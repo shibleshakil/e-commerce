@@ -14,37 +14,21 @@
                     <!--product-details-->
                     <div class="col-sm-5">
                         <div class="view-product">
-                            <img src="{{ asset('img/backend_images/products/medium/'.$productDetail->image) }}" alt="" />
+                            <img id="mainImage"
+                                src="{{ asset('img/backend_images/products/medium/'.$productDetail->image) }}" alt="" />
                         </div>
                         <div id="similar-product" class="carousel slide" data-ride="carousel">
 
                             <!-- Wrapper for slides -->
                             <div class="carousel-inner">
                                 <div class="item active">
-                                    <a href=""><img src="{{ asset('img/frontend_images/product-details/similar1.jpg') }}" alt=""></a>
-                                    <a href=""><img src="images/product-details/similar2.jpg" alt=""></a>
-                                    <a href=""><img src="images/product-details/similar3.jpg" alt=""></a>
+                                    @foreach($productAltImage as $altImage)
+                                    <a href=""><img id="altImage"
+                                            src="{{ asset('img/backend_images/products/small/'.$altImage->image) }}"
+                                            alt="" style="width:120px; cursor:pointer;" ;></a>
+                                    @endforeach
                                 </div>
-                                <div class="item">
-                                    <a href=""><img src="images/product-details/similar1.jpg" alt=""></a>
-                                    <a href=""><img src="images/product-details/similar2.jpg" alt=""></a>
-                                    <a href=""><img src="images/product-details/similar3.jpg" alt=""></a>
-                                </div>
-                                <div class="item">
-                                    <a href=""><img src="images/product-details/similar1.jpg" alt=""></a>
-                                    <a href=""><img src="images/product-details/similar2.jpg" alt=""></a>
-                                    <a href=""><img src="images/product-details/similar3.jpg" alt=""></a>
-                                </div>
-
                             </div>
-
-                            <!-- Controls -->
-                            <a class="left item-control" href="#similar-product" data-slide="prev">
-                                <i class="fa fa-angle-left"></i>
-                            </a>
-                            <a class="right item-control" href="#similar-product" data-slide="next">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
                         </div>
 
                     </div>
@@ -55,7 +39,7 @@
                             <h2>{{ $productDetail->product_name }}</h2>
                             <p>Code: {{ $productDetail->product_code }}</p>
                             <p>
-                                <select name="selectSize" id="selectSize" style="width:120px";>
+                                <select name="selectSize" id="selectSize" style="width:120px" ;>
                                     @foreach($productDetail->attributes as $size)
                                     <option value="{{ $size->id }}-{{ $size->size }}">{{ $size->size }}</option>
                                     @endforeach

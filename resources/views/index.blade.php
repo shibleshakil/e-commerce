@@ -94,7 +94,7 @@
                                         alt="" />
                                     <h2>BDT {{ $product->price }}</h2>
                                     <p>{{ $product->product_name }}</p>
-                                    <a href="#" class="btn btn-default add-to-cart"><i
+                                    <a href="{{ url('/product/'.$product->id) }}" class="btn btn-default add-to-cart"><i
                                             class="fa fa-shopping-cart"></i>Add to cart</a>
                                 </div>
                                 <!-- <div class="product-overlay">

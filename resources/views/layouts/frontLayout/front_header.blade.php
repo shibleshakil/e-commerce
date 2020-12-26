@@ -43,11 +43,12 @@ $mainCategories = Controller::mainCategories();
                     </div>
                     <div class="btn-group pull-right">
                         <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle usa" data-toggle="dropdown">
-                                USA
+                            <button type="button" class="btn btn-default dropdown-toggle usa" data-toggle="dropdown" style="margin-right:15px";>
+                                BANGLADESH
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
+                                <li><a href="#">Bangladesh</a></li>
                                 <li><a href="#">Canada</a></li>
                                 <li><a href="#">UK</a></li>
                             </ul>
@@ -55,10 +56,11 @@ $mainCategories = Controller::mainCategories();
 
                         <div class="btn-group">
                             <button type="button" class="btn btn-default dropdown-toggle usa" data-toggle="dropdown">
-                                DOLLAR
+                                BDT
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
+                                <li><a href="#">BDT</a></li>
                                 <li><a href="#">Canadian Dollar</a></li>
                                 <li><a href="#">Pound</a></li>
                             </ul>

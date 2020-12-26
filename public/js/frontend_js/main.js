@@ -31,6 +31,7 @@ $(document).ready(function(){
 
 
 $(document).ready(function(){
+	//price with size
 	$("#selectSize").change(function(){
 		var idSize = $(this).val();
 		if(idSize == ""){
@@ -43,8 +44,17 @@ $(document).ready(function(){
 			success:function(resp){
 				$("#getPrice").html("BDT "+resp);
 			},error:function(){
-				window.location.href = "http://stackoverflow.com";
+				alert("Error");
 			}
 		});
 	});
 });
+
+$(document).ready(function(){
+	//Replace main image with alternative image
+	$("#altImage").click(function(){
+		var image = $(this).attr('src');
+		$("#mainImage").attr('src',image);
+	});
+});
+

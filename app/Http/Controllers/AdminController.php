@@ -10,6 +10,22 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
+    public function register(Request $request){
+        if($request->isMethod('post')){
+            $data = $request->all();
+            
+            $register = new User;
+            $register->name = $data['name'];
+            $register->email = $data['email'];
+            $register->password = Hash::make($data['pwd']);
+            //dd($register);
+            $register->save();
+
+            return redirect('/admin')->with('success','You Are Successfully Registered as An Admin. Login Now!');
+
+        }
+        return view('admin.register');
+    }
     public function login(Request $request){
        
         if($request->isMethod('post')){
@@ -75,4 +91,5 @@ class AdminController extends Controller
         Session:: flush();
         return redirect('/admin')->with('success','Successfully Logout');
     }
+
 }

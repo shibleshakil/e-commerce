@@ -55,6 +55,38 @@ $(document).ready(function () {
 		}
 	});
 
+	//validation for register page
+	$("#register_form").validate({
+		rules:{
+			name:{
+				required: true
+			},
+			email:{
+				required: true
+			},
+			password:{
+				required: true,
+				minlength:6,
+				maxlength:20
+			},
+			confirm_password:{
+				required:true,
+				minlength:6,
+				maxlength:20,
+				equalTo:"#pwd"
+			}
+		},
+		errorClass: "help-inline",
+		errorElement: "span",
+		highlight:function(element, errorClass, validClass) {
+			$(element).parents('.control-group').addClass('error');
+		},
+		unhighlight: function(element, errorClass, validClass) {
+			$(element).parents('.control-group').removeClass('error');
+			$(element).parents('.control-group').addClass('success');
+		}
+	});
+
 	$("#add_category").validate({
 		rules: {
 			category_name: {
