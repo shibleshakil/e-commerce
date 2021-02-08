@@ -25,7 +25,7 @@
                                     @foreach($productAltImage as $altImage)
                                     <a href=""><img id="altImage"
                                             src="{{ asset('img/backend_images/products/small/'.$altImage->image) }}"
-                                            alt="" style="width:120px; cursor:pointer;" ;></a>
+                                            alt="" style="width:80px; cursor:pointer;" ;></a>
                                     @endforeach
                                 </div>
                             </div>
