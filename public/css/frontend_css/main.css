@@ -1170,12 +1170,12 @@ h2.title {
 .view-product {
   position: relative;
 }
-
+/*
 .view-product img {
   border: 1px solid #F7F7F0;
   width: 100%;
 }
-
+*/
 .view-product h3 {
   background: #FE980F;
   bottom: 0;

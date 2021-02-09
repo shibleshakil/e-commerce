@@ -14,6 +14,7 @@
     <link href="{{ asset('css/frontend_css/animate.css') }}" rel="stylesheet">
     <link href="{{ asset('css/frontend_css/main.css') }}" rel="stylesheet">
     <link href="{{ asset('css/frontend_css/responsive.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/frontend_css/easyzoom.css') }}" rel="stylesheet">
     <script src="{{ asset('js/frontend_js/jquery.js') }}"></script>
     <!--[if lt IE 9]>
     <script src="js/html5shiv.js"></script>
@@ -42,6 +43,7 @@
     <script src="{{ asset('js/frontend_js/jquery.scrollUp.min.js') }}"></script>
     <script src="{{ asset('js/frontend_js/price-range.js') }}"></script>
     <script src="{{ asset('js/frontend_js/jquery.prettyPhoto.js') }}"></script>
+    <script src="{{ asset('js/frontend_js/easyzoom.js') }}"></script>
     <script src="{{ asset('js/frontend_js/main.js') }}"></script>
 </body>
 
